@@ -2,13 +2,13 @@ package dean.org.gameofphones
 
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
-import dean.org.gameofphones.repo.CharacterRepo
-import dean.org.gameofphones.repo.DummyHouseRepo
 import dean.org.gameofphones.repo.HouseRepo
+import dean.org.gameofphones.repo.NetworkHouseRepo
+import okhttp3.OkHttpClient
 
 class GOPApplication: Application() {
 
-    val houseRepo: Lazy<HouseRepo> = lazyOf(DummyHouseRepo())
+    val houseRepo: Lazy<HouseRepo> = lazyOf(NetworkHouseRepo(OkHttpClient()))
 //    val characterRepo: Lazy<CharacterRepo> = TODO()
 
     override fun onCreate() {

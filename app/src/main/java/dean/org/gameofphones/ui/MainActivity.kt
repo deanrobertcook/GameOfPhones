@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.content, HouseListFragment.newInstance())
+            .replace(R.id.content, HouseListFragment.newInstance())
             .commit()
     }
 }

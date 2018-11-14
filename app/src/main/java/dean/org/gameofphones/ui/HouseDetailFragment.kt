@@ -19,7 +19,16 @@ class HouseDetailFragment: BaseFragment() {
         return inflater.inflate(R.layout.fragment_house_detail, container, false).apply {
             arguments?.getString(NameArg)?.let { findViewById<TextView>(R.id.house_name).text = it }
             arguments?.getString(RegionArg)?.let { findViewById<TextView>(R.id.house_region).text = it }
-            arguments?.getString(Words)?.let { findViewById<TextView>(R.id.words).text = it }
+
+            val wordsTextView = findViewById<TextView>(R.id.words)
+            val words = arguments?.getString(Words)
+            if (words != null) {
+                wordsTextView.text = words
+                wordsTextView.visibility = View.VISIBLE
+            } else {
+                wordsTextView.visibility = View.GONE
+            }
+
         }
     }
 
@@ -34,7 +43,7 @@ class HouseDetailFragment: BaseFragment() {
                 arguments = Bundle().apply {
                     putString(NameArg, house.name)
                     putString(RegionArg, house.region)
-                    putString(Words, house.words)
+                    putString(Words, if (house.words.isEmpty()) null else house.words)
                 }
             }
         }

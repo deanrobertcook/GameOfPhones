@@ -12,19 +12,10 @@
     <TextView
             android:id="@+id/house_name"
             tools:text="House name"
-            style="@style/TextAppearance.MaterialComponents.Headline4"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_size_half"
-            android:layout_marginBottom="@dimen/margin_size_half"
-    />
-
-    <TextView
-            android:id="@+id/house_region"
-            tools:text="Of BlahBlah"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_size_half"
             android:layout_marginBottom="@dimen/margin_size_half"
     />
@@ -32,11 +23,42 @@
     <TextView
             android:id="@+id/words"
             tools:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr"
+            tools:visibility="visible"
+            android:visibility="gone"
             style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_size_half"
+    />
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_half"
             android:layout_marginBottom="@dimen/margin_size_half"
-    />
+    >
+
+        <TextView
+                tools:text="Region:"
+                android:text="@string/region"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_size"
+        />
+
+        <TextView
+                android:id="@+id/house_region"
+                tools:text="MightyRegion"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

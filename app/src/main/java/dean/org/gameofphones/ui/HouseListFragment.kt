@@ -20,6 +20,7 @@ import dean.org.gameofphones.utils.viewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 class HouseListFragment: BaseFragment() {
@@ -106,6 +107,8 @@ class HouseListViewModel(app: Application): AndroidViewModel(app) {
         .houseRepo
         .value
         .getHouses()
+        .subscribeOn(Schedulers.io())
+        .cache()
         .observeOn(AndroidSchedulers.mainThread())
         .map { hs -> hs.sortedBy(House::name) }!! //TODO split Uri and sort by id
 

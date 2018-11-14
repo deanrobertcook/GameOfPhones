@@ -6,10 +6,10 @@ import io.reactivex.Single
 import kotlinx.serialization.json.JSON
 import kotlinx.serialization.serializer
 import kotlinx.serialization.set
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 
 interface HouseRepo {
     fun getHouses(): Single<Set<House>>
@@ -36,38 +36,26 @@ class DummyHouseRepo: HouseRepo {
 class NetworkHouseRepo(private val okHttpClient: OkHttpClient): HouseRepo {
 
     override fun getHouses(): Single<Set<House>> {
-        return Single.create { em ->
+        return Single.fromCallable {
             val call = okHttpClient.newCall(Request.Builder()
                 .url(HOUSES_URL)
                 .build()
             )
 
-            call.enqueue(object: Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    em.onError(e)
+            val response = call.execute()
+            val body = response.body()
+            if (body != null) {
+                val bis = BufferedInputStream(body.byteStream())
+                val bof = ByteArrayOutputStream()
+                var res = bis.read()
+                while (res != -1) {
+                    bof.write(res)
+                    res = bis.read()
                 }
-
-                override fun onResponse(call: Call, response: Response) {
-                    val body = response.body()
-                    return if (body != null) {
-                        val bis = BufferedInputStream(body.byteStream())
-                        val bof = ByteArrayOutputStream()
-                        var res = bis.read()
-                        while (res != -1) {
-                            bof.write(res)
-                            res = bis.read()
-                        }
-                        val json = bof.toString("UTF-8")
-                        Log.verbose(TAG, "Response: $json")
-                        try {
-                            em.onSuccess(JSON.nonstrict.parse(House::class.serializer().set, json))
-                        } catch (e: Throwable) {
-                            em.onError(e)
-                        }
-
-                    } else em.onSuccess(emptySet())
-                }
-            })
+                val json = bof.toString("UTF-8")
+                Log.verbose(TAG, "Response: $json")
+                JSON.nonstrict.parse(House::class.serializer().set, json)
+            } else emptySet()
         }
     }
 

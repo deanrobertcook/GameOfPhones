@@ -1,6 +1,7 @@
 package dean.org.gameofphones.ui
 
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,17 +17,30 @@ import dean.org.gameofphones.ui.HouseListAdapter.Companion.HouseViewHolder
 import dean.org.gameofphones.utils.BaseFragment
 import dean.org.gameofphones.utils.Log
 import dean.org.gameofphones.utils.viewModel
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 
 class HouseListFragment: BaseFragment() {
 
     private var housesSub: Disposable? = null
-    private var housesAdapter: HouseListAdapter? = null //TODO should the housesAdapter be in the ViewModel?? Does it need to be destroyed on config change?
+    private var houseClickedSub: Disposable? = null
+
+    private lateinit var housesAdapter: HouseListAdapter
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        housesAdapter = HouseListAdapter()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_house_list, container, false).apply {
+
+            (activity as MainActivity?)
+                ?.supportActionBar
+                ?.setDisplayHomeAsUpEnabled(false)
+
             this.findViewById<RecyclerView>(R.id.recycler_view).apply {
-                housesAdapter = HouseListAdapter()
                 this.adapter = housesAdapter
                 this.layoutManager = LinearLayoutManager(context)
             }
@@ -39,13 +53,32 @@ class HouseListFragment: BaseFragment() {
         housesSub = viewModel(HouseListViewModel::class.java)
             .houses
             .subscribe { hs ->
-                housesAdapter?.setHouses(hs)
+                housesAdapter.setHouses(hs)
             }
+
+        houseClickedSub = housesAdapter.onHouseClicked.forEach { house ->
+            (activity as MainActivity?)
+                ?.supportActionBar
+                ?.setDisplayHomeAsUpEnabled(true)
+
+            this.fragmentManager
+                ?.beginTransaction()
+                ?.setCustomAnimations(
+                    R.anim.enter_from_right,
+                    R.anim.exit_to_left,
+                    R.anim.enter_from_left,
+                    R.anim.exit_to_right
+                )
+                ?.replace(R.id.content, HouseDetailFragment.newInstance(house))
+                ?.addToBackStack("DetailStack")
+                ?.commit()
+        }
 
     }
 
     override fun onPause() {
         housesSub?.dispose()
+        houseClickedSub?.dispose()
         super.onPause()
     }
 
@@ -74,6 +107,10 @@ class HouseListViewModel(app: Application): AndroidViewModel(app) {
 
 class HouseListAdapter(): RecyclerView.Adapter<HouseViewHolder>() {
 
+    private val subject = PublishSubject.create<House>()
+
+    val onHouseClicked: Observable<House> = subject
+
     private var housesCache = emptyList<House>()
 
     fun setHouses(houses: List<House>) {
@@ -93,6 +130,7 @@ class HouseListAdapter(): RecyclerView.Adapter<HouseViewHolder>() {
     override fun onBindViewHolder(holder: HouseViewHolder, position: Int) {
         val house = housesCache[position]
         holder.houseNameView.text = house.name
+        holder.itemView.setOnClickListener { subject.onNext(house) }
     }
 
     companion object {

@@ -16,7 +16,7 @@ class DummyHouseRepo: HouseRepo {
     }
 
     private val houses = IntRange(1, 30).map { i ->
-        House(Uri.EMPTY, "House$i", "Region", Uri.EMPTY, emptySet())
+        House(Uri.EMPTY, "House$i", "Region", Uri.EMPTY, setOf("Words words words"), emptySet())
     }.toSet()
 
     override fun getHouses(): Single<Set<House>> {

@@ -6,6 +6,7 @@ data class House(val url:           Uri,
                  val name:          String,
                  val region:        String,
                  val currentLord:   Uri,
+                 val words:         Set<String>,
                  val swornMembers:  Set<Uri>)
 
 data class Character(val url:       Uri,

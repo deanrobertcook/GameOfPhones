@@ -36,11 +36,7 @@ class HouseListFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_house_list, container, false).apply {
-
-            (activity as MainActivity?)
-                ?.supportActionBar
-                ?.setDisplayHomeAsUpEnabled(false)
-
+            setShowBackArrow(false)
             this.findViewById<RecyclerView>(R.id.recycler_view).apply {
                 this.adapter = housesAdapter
                 this.layoutManager = LinearLayoutManager(context)
@@ -58,9 +54,7 @@ class HouseListFragment: BaseFragment() {
             }
 
         houseClickedSub = housesAdapter.onHouseClicked.forEach { house ->
-            (activity as MainActivity?)
-                ?.supportActionBar
-                ?.setDisplayHomeAsUpEnabled(true)
+            setShowBackArrow(true)
 
             this.fragmentManager
                 ?.beginTransaction()
@@ -75,6 +69,12 @@ class HouseListFragment: BaseFragment() {
                 ?.commit()
         }
 
+    }
+
+    private fun setShowBackArrow(show: Boolean) {
+        (activity as MainActivity?)
+            ?.supportActionBar
+            ?.setDisplayHomeAsUpEnabled(show)
     }
 
     override fun onPause() {
@@ -92,8 +92,12 @@ class HouseListFragment: BaseFragment() {
 
 class HouseListViewModel(app: Application): AndroidViewModel(app) {
 
+    companion object {
+        const val TAG = "HouseListViewModel"
+    }
+
     init {
-        Log.verbose("HouseListViewModel", "init")
+        Log.verbose(TAG, "init")
     }
 
     private val gopApp = app as GOPApplication

@@ -9,7 +9,6 @@ import okhttp3.OkHttpClient
 class GOPApplication: Application() {
 
     val houseRepo: Lazy<HouseRepo> = lazyOf(NetworkHouseRepo(OkHttpClient()))
-//    val characterRepo: Lazy<CharacterRepo> = TODO()
 
     override fun onCreate() {
         super.onCreate()

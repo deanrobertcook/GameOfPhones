@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-//Provides some basic logging/util for Fragments
+//Provides some basic logging for Fragments
 abstract class BaseFragment: Fragment() {
 
     val logTag = javaClass.simpleName
@@ -34,17 +34,17 @@ abstract class BaseFragment: Fragment() {
     }
 
     override fun onPause() {
-        super.onPause()
         Log.verbose(logTag, "onPause")
+        super.onPause()
     }
 
     override fun onStop() {
-        super.onStop()
         Log.verbose(logTag, "onStop")
+        super.onStop()
     }
 
     override fun onDetach() {
-        super.onDetach()
         Log.verbose(logTag, "onDetach")
+        super.onDetach()
     }
 }

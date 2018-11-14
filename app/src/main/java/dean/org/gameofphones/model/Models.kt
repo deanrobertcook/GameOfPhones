@@ -11,7 +11,3 @@ data class House(val url:           String,
                  val words:         String,
                  val swornMembers:  Set<String>)
 
-data class Character(val url:       Uri,
-                     val name:      String,
-                     val gender:    String,
-                     val culture:   String)

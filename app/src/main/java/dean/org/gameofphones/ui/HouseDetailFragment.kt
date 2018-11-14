@@ -17,23 +17,18 @@ class HouseDetailFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_house_detail, container, false).apply {
-            arguments?.getString(NameArg)?.let { findViewById<TextView>(R.id.house_name).text = it }
-            arguments?.getString(RegionArg)?.let { findViewById<TextView>(R.id.house_region).text = it }
+            arguments?.getString(NameArg)?.let { findViewById<TextView>(R.id.house_name)!!.text = it }
+            arguments?.getString(RegionArg)?.let { findViewById<TextView>(R.id.house_region)!!.text = it }
 
-            val wordsTextView = findViewById<TextView>(R.id.words)
-            val words = arguments?.getString(Words)
-            if (words != null) {
-                wordsTextView.text = words
-                wordsTextView.visibility = View.VISIBLE
-            } else {
-                wordsTextView.visibility = View.GONE
+            findViewById<TextView>(R.id.words)!!.apply {
+                val words = arguments?.getString(Words)
+                this.visibility = if (words == null) View.GONE else View.VISIBLE
+                this.text = words
             }
-
         }
     }
 
     companion object {
-
         const val NameArg = "Name"
         const val RegionArg = "Region"
         const val Words = "Words"
